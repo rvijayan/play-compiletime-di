@@ -1,0 +1,2 @@
+
+GET    /weather/:location                   controllers.WeatherController.get(location: String)
