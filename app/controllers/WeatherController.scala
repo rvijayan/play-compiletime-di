@@ -3,9 +3,10 @@ package controllers
 import play.api.mvc.{Action, Controller}
 import services.WeatherService
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 class WeatherController(ws: WeatherService) extends Controller {
+  implicit val ec = ExecutionContext.Implicits.global
 
   def get(location: String) = Action.async { implicit request =>
 

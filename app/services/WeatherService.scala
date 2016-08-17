@@ -5,24 +5,25 @@ import play.api.libs.ws.WSClient
 
 import scala.concurrent.Future
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 class WeatherService(ws: WSClient) {
 
   val URL = "http://api.openweathermap.org/data/2.5/weather"
 
-  val APIKey = "787120d8face53883119f9c15790e852"
+  val APIKey = "XXXXX"
 
-  def request(location: String) = ws
-    .url(URL)
-    .withHeaders("Accept" -> "application/json")
-    .withQueryString(("q" -> location),("appid" -> APIKey))
+  implicit val ec = ExecutionContext.Implicits.global
 
   def weather(location: String): Future[JsValue] = {
     val response = request(location).get
 
-    response.map { x =>
-      x.json
-    }
+    response.map(_.json)
   }
+
+  private def request(location: String) = ws
+    .url(URL)
+    .withHeaders("Accept" -> "application/json")
+    .withQueryString(("q" -> location),("appid" -> APIKey))
+
 }
