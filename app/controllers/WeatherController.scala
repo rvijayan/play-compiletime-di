@@ -12,8 +12,8 @@ class WeatherController(ws: WeatherService) extends Controller {
 
     val weather = ws.weather(location)
 
-    weather.map { x =>
-      Ok(x)
-    }.recover { case _ => NotFound }
+    weather
+      .map(Ok(_))
+      .recover { case _ => NotFound }
   }
 }

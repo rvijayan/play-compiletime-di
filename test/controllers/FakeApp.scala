@@ -1,20 +1,32 @@
 package controllers
 
+import java.io.File
 import org.scalatest.mock.MockitoSugar
 import play.api.ApplicationLoader.Context
-import play.api.{Application, ApplicationLoader, BuiltInComponentsFromContext}
+import play.api._
 import router.Routes
 import services.WeatherService
 
-class FakeApplicationComponents(context: Context) extends BuiltInComponentsFromContext(context)  with MockitoSugar {
+object FakeApp {
+  val app = {
+    val appLoader = new FakeAppLoader
+    val context = ApplicationLoader.createContext(
+      new Environment(new File("."), ApplicationLoader.getClass.getClassLoader, Mode.Test)
+    )
+    appLoader.load(context)
+  }
 
-  private val service = mock[WeatherService]
-  private val controller = new WeatherController(service)
+  class FakeApplicationComponents(context: Context) extends BuiltInComponentsFromContext(context)  with MockitoSugar {
 
-  override def router = new Routes(httpErrorHandler, controller)
+    private val service = mock[WeatherService]
+    private val controller = new WeatherController(service)
+
+    override def router = new Routes(httpErrorHandler, controller)
+  }
+
+  class FakeAppLoader extends ApplicationLoader {
+    override def load(context: Context): Application =
+      new FakeApplicationComponents(context).application
+  }
 }
 
-class FakeAppLoader extends ApplicationLoader {
-  override def load(context: Context): Application =
-    new FakeApplicationComponents(context).application
-}

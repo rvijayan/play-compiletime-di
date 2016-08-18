@@ -1,11 +1,8 @@
 package controllers
 
-import java.io.File
-
-import org.scalatest.{TestData, MustMatchers}
+import org.scalatest.TestData
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-import play.api._
 import play.api.http.MimeTypes._
 import play.api.http.{HeaderNames, HttpProtocol, Status}
 import play.api.libs.json.Json
@@ -31,13 +28,7 @@ class WeatherControllerSpec extends PlaySpec
   private val service = mock[WeatherService]
   private val controller = new WeatherController(service)
 
-  override def newAppForTest(testData: TestData) = {
-    val appLoader = new FakeAppLoader
-    val context = ApplicationLoader.createContext(
-      new Environment(new File("."), ApplicationLoader.getClass.getClassLoader, Mode.Test)
-    )
-    appLoader.load(context)
-  }
+  override def newAppForTest(testData: TestData) = FakeApp.app
 
     "WeatherController" should {
 
